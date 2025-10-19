@@ -20,10 +20,13 @@ interface Product {
   inStock: boolean;
   category: string;
   description: string;
+  isNew?: boolean;
 }
 
 const Index = () => {
   const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
+  const [supportOpen, setSupportOpen] = useState(false);
+  const [supportMessage, setSupportMessage] = useState('');
 
   const products: Product[] = [
     {
@@ -35,6 +38,7 @@ const Index = () => {
       inStock: true,
       category: 'Мягкая мебель',
       description: 'Современный диван с удобными подушками и прочным каркасом. Идеально подходит для гостиной.',
+      isNew: true,
     },
     {
       id: 2,
@@ -54,6 +58,7 @@ const Index = () => {
       inStock: true,
       category: 'Шкафы и стеллажи',
       description: 'Стильный книжный стеллаж с современным дизайном. Подойдет для любого интерьера.',
+      isNew: true,
     },
     {
       id: 4,
@@ -83,11 +88,13 @@ const Index = () => {
       inStock: true,
       category: 'Мягкая мебель',
       description: 'Комфортное кресло для отдыха с мягкой обивкой.',
+      isNew: true,
     },
   ];
 
   const discountedProducts = products.filter(p => p.oldPrice);
   const inStockProducts = products.filter(p => p.inStock);
+  const newProducts = products.filter(p => p.isNew);
 
   return (
     <div className="min-h-screen bg-background">
@@ -167,6 +174,65 @@ const Index = () => {
         </div>
       </section>
 
+      <section className="py-16 bg-secondary/20">
+        <div className="container mx-auto px-4">
+          <div className="flex items-center justify-between mb-10">
+            <h2 className="text-4xl font-bold">Новинки</h2>
+            <Badge className="bg-primary text-white text-lg px-4 py-2">
+              <Icon name="Sparkles" size={20} className="mr-2" />
+              {newProducts.length} новых товаров
+            </Badge>
+          </div>
+          
+          <div className="grid md:grid-cols-3 gap-8">
+            {newProducts.map((product) => (
+              <Card 
+                key={product.id} 
+                className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer bg-white"
+                onClick={() => setSelectedProduct(product)}
+              >
+                <div className="relative h-64 bg-gray-100">
+                  <img 
+                    src={product.image} 
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <Badge className="absolute top-4 left-4 bg-primary text-white text-lg px-3 py-1">
+                    <Icon name="Sparkles" size={16} className="mr-1" />
+                    Новинка
+                  </Badge>
+                  {product.oldPrice && (
+                    <Badge className="absolute top-4 right-4 bg-destructive text-white text-lg px-3 py-1">
+                      -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
+                    </Badge>
+                  )}
+                </div>
+                <CardContent className="p-6">
+                  <Badge variant="outline" className="mb-3">{product.category}</Badge>
+                  <h3 className="text-xl font-bold mb-3">{product.name}</h3>
+                  
+                  <div className="flex items-center gap-3 mb-4">
+                    <span className="text-3xl font-bold text-primary">
+                      {product.price.toLocaleString('ru-RU')} ₽
+                    </span>
+                    {product.oldPrice && (
+                      <span className="text-lg text-muted-foreground line-through">
+                        {product.oldPrice.toLocaleString('ru-RU')} ₽
+                      </span>
+                    )}
+                  </div>
+                  
+                  <Button className="w-full">
+                    <Icon name="ShoppingCart" size={18} className="mr-2" />
+                    В корзину
+                  </Button>
+                </CardContent>
+              </Card>
+            ))}
+          </div>
+        </div>
+      </section>
+
       <section id="catalog" className="py-16">
         <div className="container mx-auto px-4">
           <h2 className="text-4xl font-bold mb-10 text-center">Каталог товаров</h2>
@@ -184,6 +250,12 @@ const Index = () => {
                     alt={product.name}
                     className="w-full h-full object-cover"
                   />
+                  {product.isNew && (
+                    <Badge className="absolute top-4 left-4 bg-primary text-white text-lg px-3 py-1">
+                      <Icon name="Sparkles" size={16} className="mr-1" />
+                      Новинка
+                    </Badge>
+                  )}
                   {product.oldPrice && (
                     <Badge className="absolute top-4 right-4 bg-destructive text-white text-lg px-3 py-1">
                       -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
@@ -299,6 +371,66 @@ const Index = () => {
               </div>
             </>
           )}
+        </DialogContent>
+      </Dialog>
+
+      <Button
+        onClick={() => setSupportOpen(true)}
+        size="lg"
+        className="fixed bottom-8 right-8 rounded-full w-16 h-16 shadow-2xl hover:scale-110 transition-transform z-50"
+      >
+        <Icon name="MessageCircle" size={28} />
+      </Button>
+
+      <Dialog open={supportOpen} onOpenChange={setSupportOpen}>
+        <DialogContent className="sm:max-w-md">
+          <DialogHeader>
+            <DialogTitle className="text-2xl flex items-center gap-2">
+              <Icon name="Headphones" size={24} className="text-primary" />
+              Техподдержка
+            </DialogTitle>
+            <DialogDescription>
+              Опишите вашу проблему, и мы свяжемся с вами в ближайшее время
+            </DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <label className="text-sm font-medium mb-2 block">Ваше сообщение</label>
+              <textarea
+                className="w-full min-h-[120px] p-3 border rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-primary"
+                placeholder="Расскажите, чем мы можем помочь..."
+                value={supportMessage}
+                onChange={(e) => setSupportMessage(e.target.value)}
+              />
+            </div>
+            <div className="bg-secondary/30 p-4 rounded-lg">
+              <h4 className="font-semibold mb-2 flex items-center gap-2">
+                <Icon name="Clock" size={18} />
+                Время ответа
+              </h4>
+              <p className="text-sm text-muted-foreground">Обычно мы отвечаем в течение 15 минут</p>
+            </div>
+            <div className="flex gap-3">
+              <Button
+                variant="outline"
+                className="flex-1"
+                onClick={() => setSupportOpen(false)}
+              >
+                Отмена
+              </Button>
+              <Button
+                className="flex-1"
+                onClick={() => {
+                  setSupportMessage('');
+                  setSupportOpen(false);
+                }}
+                disabled={!supportMessage.trim()}
+              >
+                <Icon name="Send" size={18} className="mr-2" />
+                Отправить
+              </Button>
+            </div>
+          </div>
         </DialogContent>
       </Dialog>
 
