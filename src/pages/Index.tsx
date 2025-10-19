@@ -7,7 +7,6 @@ import NewProductsSection from '@/components/NewProductsSection';
 import ProductCard, { Product } from '@/components/ProductCard';
 import ProductDialog from '@/components/ProductDialog';
 import SupportDialog from '@/components/SupportDialog';
-import CartDrawer, { CartItem } from '@/components/CartDrawer';
 import Footer from '@/components/Footer';
 import Icon from '@/components/ui/icon';
 
@@ -16,214 +15,146 @@ const Index = () => {
   const [supportOpen, setSupportOpen] = useState(false);
   const [supportMessage, setSupportMessage] = useState('');
   const [selectedCategory, setSelectedCategory] = useState<string>('Все');
-  const [cartOpen, setCartOpen] = useState(false);
-  const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const products: Product[] = [
     {
       id: 1,
       name: 'Диван "Комфорт"',
-      basePrice: 45900,
+      price: 45900,
       oldPrice: 59900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/6f5e413a-b193-433c-9ad7-6198b41d2b53.jpg',
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/d2255900-1829-45a8-a3c6-d0af7652aec6.jpg',
       inStock: true,
       category: 'Диваны',
       description: 'Современный диван с удобными подушками и прочным каркасом. Идеально подходит для гостиной.',
       isNew: true,
-      variants: [
-        { color: 'Серый', material: 'Ткань', priceModifier: 0 },
-        { color: 'Синий', material: 'Ткань', priceModifier: 2000 },
-        { color: 'Бежевый', material: 'Велюр', priceModifier: 5000 },
-      ],
     },
     {
       id: 2,
       name: 'Обеденный стол "Классик"',
-      basePrice: 32500,
+      price: 32500,
       oldPrice: 42000,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/9b0a6cff-2091-43ac-ab54-b110f84a08bf.jpg',
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/66e394ac-ae1f-4d9e-ac17-8b9ec109aa55.jpg',
       inStock: true,
       category: 'Столы',
       description: 'Элегантный обеденный стол из массива дерева. Рассчитан на 6 персон.',
-      variants: [
-        { color: 'Дуб натуральный', material: 'Массив дуба', priceModifier: 0 },
-        { color: 'Орех', material: 'Массив ореха', priceModifier: 7000 },
-        { color: 'Венге', material: 'Массив бука', priceModifier: 5000 },
-      ],
     },
     {
       id: 3,
       name: 'Книжный стеллаж "Модерн"',
-      basePrice: 18900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/81d52e4a-94d8-4354-92aa-2922ed2d0acd.jpg',
+      price: 18900,
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/9fe5baee-edfe-4f51-a0ff-aca4fd30b5a7.jpg',
       inStock: true,
       category: 'Стеллажи',
       description: 'Стильный книжный стеллаж с современным дизайном. Подойдет для любого интерьера.',
       isNew: true,
-      variants: [
-        { color: 'Белый', material: 'Металл', priceModifier: 0 },
-        { color: 'Черный', material: 'Металл', priceModifier: 1000 },
-        { color: 'Натуральное дерево', material: 'Дерево+металл', priceModifier: 4000 },
-      ],
     },
     {
       id: 4,
       name: 'Кровать "Уют" 160x200',
-      basePrice: 28900,
+      price: 28900,
       oldPrice: 35900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/2c088bf0-0d76-4b67-8309-a3911bb92fa3.jpg',
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/d2255900-1829-45a8-a3c6-d0af7652aec6.jpg',
       inStock: false,
       category: 'Кровати',
       description: 'Удобная кровать с ортопедическим основанием. Размер 160x200 см.',
-      variants: [
-        { color: 'Серый', material: 'Ткань', priceModifier: 0 },
-        { color: 'Бежевый', material: 'Экокожа', priceModifier: 8000 },
-      ],
     },
     {
       id: 5,
       name: 'Шкаф-купе "Лофт"',
-      basePrice: 54900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/2a908ca9-86b0-48dc-b374-587c6061e92e.jpg',
+      price: 54900,
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/9fe5baee-edfe-4f51-a0ff-aca4fd30b5a7.jpg',
       inStock: true,
       category: 'Шкафы',
       description: 'Вместительный шкаф-купе с зеркальными дверями. Ширина 2 метра.',
-      variants: [
-        { color: 'Черный', material: 'ЛДСП', priceModifier: 0 },
-        { color: 'Белый глянец', material: 'МДФ', priceModifier: 12000 },
-        { color: 'Дуб', material: 'ЛДСП', priceModifier: 6000 },
-      ],
     },
     {
       id: 6,
       name: 'Кресло "Релакс"',
-      basePrice: 15900,
+      price: 15900,
       oldPrice: 19900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/1d83cf94-fb39-4471-a08d-3ed4e8f813c7.jpg',
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/2981f4d0-a809-48b0-96fc-cb81b9ee2e29.jpg',
       inStock: true,
       category: 'Кресла',
       description: 'Комфортное кресло для отдыха с мягкой обивкой.',
       isNew: true,
-      variants: [
-        { color: 'Изумрудный', material: 'Велюр', priceModifier: 0 },
-        { color: 'Серый', material: 'Велюр', priceModifier: 0 },
-        { color: 'Розовый', material: 'Бархат', priceModifier: 3000 },
-      ],
     },
     {
       id: 7,
       name: 'Стул "Элеганс"',
-      basePrice: 4900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/425ac5cc-74c2-4b10-96e1-749f88ac030a.jpg',
+      price: 4900,
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/202e6393-c1e1-4f3b-94a8-51dbd61283cf.jpg',
       inStock: true,
       category: 'Стулья',
       description: 'Деревянный стул с эргономичной спинкой. Идеален для кухни и столовой.',
-      variants: [
-        { color: 'Белый/бук', material: 'Дерево', priceModifier: 0 },
-        { color: 'Черный/дуб', material: 'Дерево', priceModifier: 800 },
-        { color: 'Серый/орех', material: 'Дерево', priceModifier: 1200 },
-      ],
     },
     {
       id: 8,
       name: 'Стул "Скандинавия"',
-      basePrice: 5900,
+      price: 5900,
       oldPrice: 7500,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/425ac5cc-74c2-4b10-96e1-749f88ac030a.jpg',
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/202e6393-c1e1-4f3b-94a8-51dbd61283cf.jpg',
       inStock: true,
       category: 'Стулья',
       description: 'Стильный стул в скандинавском стиле с мягким сиденьем.',
       isNew: true,
-      variants: [
-        { color: 'Белый', material: 'Пластик+дерево', priceModifier: 0 },
-        { color: 'Серый', material: 'Пластик+дерево', priceModifier: 200 },
-      ],
     },
     {
       id: 9,
       name: 'Кресло "Офис Премиум"',
-      basePrice: 22900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/49797441-ec18-466d-b6e0-a551f176ba0c.jpg',
+      price: 22900,
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/2981f4d0-a809-48b0-96fc-cb81b9ee2e29.jpg',
       inStock: true,
       category: 'Кресла',
       description: 'Офисное кресло с ортопедической поддержкой и регулировкой высоты.',
-      variants: [
-        { color: 'Черный', material: 'Экокожа', priceModifier: 0 },
-        { color: 'Коричневый', material: 'Натуральная кожа', priceModifier: 15000 },
-        { color: 'Серый', material: 'Ткань-сетка', priceModifier: -3000 },
-      ],
     },
     {
       id: 10,
       name: 'Журнальный столик "Минимал"',
-      basePrice: 8900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/a9483fd0-16d8-4acc-9fd6-a39e932fb85a.jpg',
+      price: 8900,
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/8a1cfe91-eafa-4924-a665-8cc4522b5c51.jpg',
       inStock: true,
       category: 'Столики',
       description: 'Компактный журнальный столик для гостиной в стиле минимализм.',
       isNew: true,
-      variants: [
-        { color: 'Золото', material: 'Стекло+металл', priceModifier: 0 },
-        { color: 'Хром', material: 'Стекло+металл', priceModifier: -500 },
-        { color: 'Черный', material: 'Стекло+металл', priceModifier: 1000 },
-      ],
     },
     {
       id: 11,
       name: 'Приставной столик "Лаунж"',
-      basePrice: 6500,
+      price: 6500,
       oldPrice: 8900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/d24e9de3-bd06-4177-84cf-d9050bf28715.jpg',
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/8a1cfe91-eafa-4924-a665-8cc4522b5c51.jpg',
       inStock: true,
       category: 'Столики',
       description: 'Небольшой столик для размещения у дивана или кресла.',
-      variants: [
-        { color: 'Темный орех', material: 'Массив', priceModifier: 0 },
-        { color: 'Светлый дуб', material: 'Массив', priceModifier: 500 },
-      ],
     },
     {
       id: 12,
       name: 'Тумбочка "Классик"',
-      basePrice: 7900,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/cbdd7bac-ee1f-48df-9a5b-ac132ae240e2.jpg',
+      price: 7900,
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/041b2761-8d24-4ac5-97db-3b6daa8d7d2f.jpg',
       inStock: true,
       category: 'Тумбы',
       description: 'Прикроватная тумбочка с двумя ящиками.',
-      variants: [
-        { color: 'Белый', material: 'МДФ', priceModifier: 0 },
-        { color: 'Серый', material: 'МДФ', priceModifier: 500 },
-        { color: 'Дуб', material: 'ЛДСП', priceModifier: 1200 },
-      ],
     },
     {
       id: 13,
       name: 'Тумбочка "Модерн Плюс"',
-      basePrice: 9500,
+      price: 9500,
       oldPrice: 12500,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/3d6fddfa-a87e-4aea-bfd7-104894e39bdd.jpg',
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/041b2761-8d24-4ac5-97db-3b6daa8d7d2f.jpg',
       inStock: true,
       category: 'Тумбы',
       description: 'Современная тумба с глянцевой поверхностью и выдвижными ящиками.',
       isNew: true,
-      variants: [
-        { color: 'Черный глянец', material: 'МДФ', priceModifier: 0 },
-        { color: 'Белый глянец', material: 'МДФ', priceModifier: 500 },
-        { color: 'Красный глянец', material: 'МДФ', priceModifier: 1500 },
-      ],
     },
     {
       id: 14,
       name: 'Барный стул "Лофт"',
-      basePrice: 7200,
-      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/37b27362-82af-480f-9189-315e9ca37d0b.jpg',
+      price: 7200,
+      image: 'https://cdn.poehali.dev/projects/908731b2-690d-4e6b-9bfc-3908d16f0265/files/202e6393-c1e1-4f3b-94a8-51dbd61283cf.jpg',
       inStock: true,
       category: 'Стулья',
       description: 'Высокий барный стул с металлическим каркасом в стиле лофт.',
-      variants: [
-        { color: 'Дерево+черный металл', material: 'Дерево+металл', priceModifier: 0 },
-        { color: 'Черная кожа+металл', material: 'Экокожа+металл', priceModifier: 2500 },
-      ],
     },
   ];
 
@@ -242,45 +173,9 @@ const Index = () => {
     setSupportOpen(false);
   };
 
-  const handleAddToCart = (product: Product) => {
-    const existingItem = cartItems.find(item => item.id === product.id);
-    
-    if (existingItem) {
-      setCartItems(cartItems.map(item =>
-        item.id === product.id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      ));
-    } else {
-      setCartItems([...cartItems, { ...product, quantity: 1 }]);
-    }
-    setCartOpen(true);
-  };
-
-  const handleRemoveFromCart = (productId: number) => {
-    setCartItems(cartItems.filter(item => item.id !== productId));
-  };
-
-  const handleUpdateQuantity = (productId: number, quantity: number) => {
-    setCartItems(cartItems.map(item =>
-      item.id === productId
-        ? { ...item, quantity }
-        : item
-    ));
-  };
-
-  const handleClearCart = () => {
-    setCartItems([]);
-  };
-
-  const totalCartItems = cartItems.reduce((sum, item) => sum + item.quantity, 0);
-
   return (
     <div className="min-h-screen bg-background">
-      <Header 
-        cartItemsCount={totalCartItems}
-        onCartClick={() => setCartOpen(true)}
-      />
+      <Header />
 
       <HeroSection 
         discountedCount={discountedProducts.length}
@@ -320,7 +215,6 @@ const Index = () => {
                 key={product.id}
                 product={product}
                 onClick={setSelectedProduct}
-                onAddToCart={handleAddToCart}
               />
             ))}
           </div>
@@ -331,16 +225,6 @@ const Index = () => {
         product={selectedProduct}
         open={!!selectedProduct}
         onOpenChange={(open) => !open && setSelectedProduct(null)}
-        onAddToCart={handleAddToCart}
-      />
-
-      <CartDrawer 
-        open={cartOpen}
-        onOpenChange={setCartOpen}
-        items={cartItems}
-        onRemoveItem={handleRemoveFromCart}
-        onUpdateQuantity={handleUpdateQuantity}
-        onClearCart={handleClearCart}
       />
 
       <Button
