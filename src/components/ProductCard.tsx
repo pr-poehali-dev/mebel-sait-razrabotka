@@ -3,24 +3,44 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import Icon from '@/components/ui/icon';
 
+export interface ProductVariant {
+  color: string;
+  material: string;
+  priceModifier: number;
+}
+
 export interface Product {
   id: number;
   name: string;
-  price: number;
+  basePrice: number;
   oldPrice?: number;
   image: string;
   inStock: boolean;
   category: string;
   description: string;
   isNew?: boolean;
+  variants: ProductVariant[];
+  selectedVariant?: ProductVariant;
 }
 
 interface ProductCardProps {
   product: Product;
   onClick: (product: Product) => void;
+  onAddToCart?: (product: Product) => void;
 }
 
-const ProductCard = ({ product, onClick }: ProductCardProps) => {
+const ProductCard = ({ product, onClick, onAddToCart }: ProductCardProps) => {
+  const selectedVariant = product.selectedVariant || product.variants[0];
+  const finalPrice = product.basePrice + selectedVariant.priceModifier;
+  const finalOldPrice = product.oldPrice ? product.oldPrice + selectedVariant.priceModifier : undefined;
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onAddToCart && product.inStock) {
+      onAddToCart(product);
+    }
+  };
+
   return (
     <Card 
       className="overflow-hidden hover:shadow-xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
@@ -38,9 +58,9 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
             Новинка
           </Badge>
         )}
-        {product.oldPrice && (
+        {finalOldPrice && (
           <Badge className="absolute top-4 right-4 bg-destructive text-white text-lg px-3 py-1">
-            -{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)}%
+            -{Math.round(((finalOldPrice - finalPrice) / finalOldPrice) * 100)}%
           </Badge>
         )}
         {!product.inStock && (
@@ -55,13 +75,19 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         <Badge variant="outline" className="mb-3">{product.category}</Badge>
         <h3 className="text-xl font-bold mb-3">{product.name}</h3>
         
+        <div className="mb-3">
+          <p className="text-sm text-muted-foreground mb-1">
+            {selectedVariant.material} • {selectedVariant.color}
+          </p>
+        </div>
+        
         <div className="flex items-center gap-3 mb-4">
           <span className="text-3xl font-bold text-primary">
-            {product.price.toLocaleString('ru-RU')} ₽
+            {finalPrice.toLocaleString('ru-RU')} ₽
           </span>
-          {product.oldPrice && (
+          {finalOldPrice && (
             <span className="text-lg text-muted-foreground line-through">
-              {product.oldPrice.toLocaleString('ru-RU')} ₽
+              {finalOldPrice.toLocaleString('ru-RU')} ₽
             </span>
           )}
         </div>
@@ -80,6 +106,7 @@ const ProductCard = ({ product, onClick }: ProductCardProps) => {
         <Button 
           className="w-full" 
           disabled={!product.inStock}
+          onClick={handleAddToCart}
         >
           <Icon name="ShoppingCart" size={18} className="mr-2" />
           {product.inStock ? "В корзину" : "Сообщить о поступлении"}
